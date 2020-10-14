@@ -1,3 +1,4 @@
+.idea/
 *.swp
 ~*
 *~
@@ -11,4 +12,3 @@ _notebooks/.ipynb_checkpoints
 .netlify
 .tweet-cache
 __pycache__
-.idea/
