@@ -21,6 +21,22 @@
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/DLblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nitishsadire.github.io/DLblog/feed.xml" title="DLBlog" /><link rel="shortcut icon" type="image/x-icon" href="/DLblog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
 
 <script>
 function wrap_img(fn) {
@@ -716,91 +732,17 @@ window.onload = wrap_img;
 
 <div class="output_area">
 
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">--------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-4-389ac841af59&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-red-fg"># display table with pandas</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> df[['Title', 'Worldwide_Gross', 
+</span><span class="ansi-green-intense-fg ansi-bold">      3</span>     'Production_Budget', 'Distributor', 'MPAA_Rating', 'IMDB_Rating', 'Rotten_Tomatoes_Rating']].head()
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Title</th>
-      <th>Worldwide_Gross</th>
-      <th>Production_Budget</th>
-      <th>Distributor</th>
-      <th>MPAA_Rating</th>
-      <th>IMDB_Rating</th>
-      <th>Rotten_Tomatoes_Rating</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>The Land Girls</td>
-      <td>146083.0</td>
-      <td>8000000.0</td>
-      <td>Gramercy</td>
-      <td>R</td>
-      <td>6.1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>First Love, Last Rites</td>
-      <td>10876.0</td>
-      <td>300000.0</td>
-      <td>Strand</td>
-      <td>R</td>
-      <td>6.9</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>I Married a Strange Person</td>
-      <td>203134.0</td>
-      <td>250000.0</td>
-      <td>Lionsgate</td>
-      <td>None</td>
-      <td>6.8</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Let's Talk About Sex</td>
-      <td>373615.0</td>
-      <td>300000.0</td>
-      <td>Fine Line</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>13.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Slam</td>
-      <td>1087521.0</td>
-      <td>1000000.0</td>
-      <td>Trimark</td>
-      <td>R</td>
-      <td>3.4</td>
-      <td>62.0</td>
-    </tr>
-  </tbody>
-</table>
+<span class="ansi-red-fg">NameError</span>: name 'df' is not defined</pre>
 </div>
-</div>
-
 </div>
 
 </div>
@@ -819,7 +761,7 @@ window.onload = wrap_img;
 <a class="anchor" href="#Local-Images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Local Images<a class="anchor-link" href="#Local-Images"> </a>
 </h3>
 <p>You can reference local images and they will be copied and rendered on your blog automatically.  You can include these with the following markdown syntax:</p>
-<p><code>![](my_icons/fastai_logo1.png)</code></p>
+<p><img src="/DLblog/images/copied_from_nb/my_icons/fastai_logo.png" alt=""></p>
 
 </div>
 </div>
