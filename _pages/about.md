@@ -4,8 +4,6 @@ title: About Me
 permalink: /about/
 ---
 
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
+Nitish Sandhu
+M.Tech from IISc (2018), B.Tech from NIT Kurukshetra (2015).
 
-
-
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
