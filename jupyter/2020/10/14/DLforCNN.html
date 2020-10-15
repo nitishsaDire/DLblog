@@ -152,18 +152,18 @@ window.onload = wrap_img;
 <h2 id="Introduction">
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
-<p>Deep Learning is a technique to extract and transform data from an input dataset, by using a <code>deep</code> network of neural network layers. By deep means that number of layers are huge, could be as big as 100s of layers.
+<p>Deep Learning is a technique to extract and transform data from an input dataset, by using a <code>deep</code> network of neural network layers. By deep means that the number of layers is huge, could be as big as 100s of layers.
 Layers in any deep neural network are in one of the following categories:</p>
 <ul>
 <li>
 <strong>Input Layer:</strong> The input applied to the network.</li>
 <li>
-<strong>Hidden Layers:</strong> These are the layers where actual magic of learning of network parameters happens. Each hidden layer receives input as output of previous layer, applies transformations on the input, and gives output to the next layer.</li>
+<strong>Hidden Layers:</strong> These are all the layers between the input layer and the output layer of a neural network. Each layer has multiple neurons (described in the next section). A neuron applies weights (linear function) to the input received and directs it through an activation function (non-linear function). Each hidden layer receives input as the output of the previous layer, applies transformations on the input, and gives output to the next layer.</li>
 <li>
-<strong>Output Layer:</strong> This layer computes the output of network in the format we want. E.g. In classification problem if there are C classes, then generally output layer gives a C length vector containing probabilities for each class.</li>
+<strong>Output Layer:</strong> This layer computes the output of the network in the format we want. E.g. In classification problem if there are C classes, then generally output layer gives a C length vector containing probabilities for each class.</li>
 </ul>
 <p>The output of the neural network is compared against the true-output or truth-value, and a loss-value is calculated using a loss function.</p>
-<p>A loss function takes input as network's output $(\hat{y})$ and truth-value$(y)$ and computes a scalar value which depicts our happiness or unhappiness with the result. E.g. If we have 5 classes, i.e. $C=5$, and we get $y=2$, but $\hat{y}=1$, it means that our network predicted classifies input into class 2, but the ground truth showing input of class 1. To give feedback of our <em>unhappiness</em> to the network our loss value should be high positive number. If $\hat{y} = y$ then our loss should be 0.</p>
+<p>A loss function takes input as the network's output $(\hat{y})$ and truth-value$(y)$ and computes a scalar value which depicts our happiness or unhappiness with the result. E.g. If we have 5 classes, i.e. $C=5$, and we get $y=2$, but $\hat{y}=1$, it means that our network predicted classifies input into class 2, but the ground truth showing input of class 1. To give feedback of our <em>unhappiness</em> to the network our loss value should be a high positive number. If $\hat{y} = y$ then our loss should be 0.</p>
 <p>Image of a neural network, with 3 hidden layers, which is considered not so deep, is shown below. Here each node is a neuron, edges are weights.</p>
 
 </div>
@@ -183,7 +183,7 @@ Layers in any deep neural network are in one of the following categories:</p>
 <h2 id="Neuron">
 <a class="anchor" href="#Neuron" aria-hidden="true"><span class="octicon octicon-link"></span></a>Neuron<a class="anchor-link" href="#Neuron"> </a>
 </h2>
-<p>A neuron is the fundamental block of a deep learning neural network. Each neuron has weights, bias, and a activation function associated with it, as shown in figure below. It receives inputs $x_i$, each input $x_i$ is multiplied with weight $w_i$, and bias $b$ is added to the final product, therefore $sum = \Sigma{(w_i.x_i)} + b$. 
+<p>A neuron is the fundamental block of a deep learning neural network. Each neuron has weights, bias, and an activation function associated with it, as shown in the figure below. It receives inputs $x_i$, each input $x_i$ is multiplied with weight $w_i$, and bias $b$ is added to the final product, therefore $sum = \Sigma{(w_i.x_i)} + b$. 
 Now activation function $\phi()$ is applied on the sum, so $y = \phi( \Sigma{(w_i.x_i)} + b )$. Some most commonly used activation functions are RELU, sigmoid, etc.</p>
 
 </div>
@@ -204,11 +204,11 @@ Now activation function $\phi()$ is applied on the sum, so $y = \phi( \Sigma{(w_
 <a class="anchor" href="#Parameters-Updation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters Updation<a class="anchor-link" href="#Parameters-Updation"> </a>
 </h2>
 <p>When we feed an input into the neural network then it gives output $\hat{y}$. Let's have $y$ as ground truth label, and loss is $L = f(y, \hat{y})$, where $f()$ is our loss function. 
-We know that layer $L_i$ takes input as output of layer $L_{i-1}$, which in turn takes input from the output of layer $L_{i-2}$, and so on. The point is that layer $L_i$ output depends on all the layers before it. Therefore the final neural network output $y$ could be thought as a complex function taking all the network parameters (weights and bias of all neurons of all the layers) as input to that function.
+We know that layer $L_i$ takes input as an output of layer $L_{i-1}$, which in turn takes input from the output of layer $L_{i-2}$, and so on. The point is that layer $L_i$ output depends on all the layers before it. Therefore the final neural network output $y$ could be thought of as a complex function taking all the network parameters (weights and bias of all neurons of all the layers) as input to that function.
 Mathematically, if $N()$ is a neural network function involving all parameters, and input is x, then loss $L = f(y, N(x))$</p>
-<p>Now we can compute derivative of L w.r.t. to each parameter of neural network, $\frac{\partial{L}}{\partial(p)}$, for all parameters p of the network. $\frac{\partial{L}}{\partial(p)}$ gives the direction of steepest ascent of the loss L w.r.t. to parameter p, means the direction in which if we little bit change p then value of L will increase the most. Therefore if we move p in the exactly opposite direction then that will be steepest descent direction, and so L will decrease the most. So, we can update parameter p as:
+<p>Now we can compute derivatives of L w.r.t. to each parameter of neural network, $\frac{\partial{L}}{\partial(p)}$, for all parameters p of the network. $\frac{\partial{L}}{\partial(p)}$ gives the direction of the steepest ascent of the loss L w.r.t. to parameter p, which means the direction in which if we little bit change p then the value of L will increase the most. Therefore if we move p in the exact opposite direction then that will be the steepest descent direction, and so L will decrease the most. So, we can update parameter p as:
 $p = p - \alpha\frac{\partial{L}}{\partial(p)}$, where $\alpha$ is known as the learning rate, the length of the step we have taken in the steepest descent direction.</p>
-<p>This is known as classic Gradient Descent Algorithm for parameters updation. We can update all the parameters in the similar way, i.e. by computing gradient of loss L w.r.t. to parameter, and then applying Gradient Descent Algorithm</p>
+<p>This is known as the classic Gradient Descent Algorithm for parameters updation. We can update all the parameters in a similar way, i.e. by computing gradient of loss L w.r.t. to a parameter, and then applying Gradient Descent Algorithm</p>
 
 </div>
 </div>
@@ -219,15 +219,15 @@ $p = p - \alpha\frac{\partial{L}}{\partial(p)}$, where $\alpha$ is known as the 
 <h2 id="Network-Training">
 <a class="anchor" href="#Network-Training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network Training<a class="anchor-link" href="#Network-Training"> </a>
 </h2>
-<p>Supppose we have set of n training examples as $\{(x_1, y_1), (x_2, y_2), ... , (x_n, y_n)\}$. We have initialized all the network parameters with randomly small values. First training step could se defined as:</p>
+<p>Suppose we have set of n training examples as $\{(x_1, y_1), (x_2, y_2), ... , (x_n, y_n)\}$. We have initialized all the network parameters with randomly small values. The first training step could be defined as:</p>
 <ul>
 <li>Computing neural network output on $x_1$.</li>
 <li>Computing loss as $f(y_1, \hat{y_1})$, where $y_1$ is ground truth label from training set, and $\hat{y_1}$ is class predicted by the neural network.</li>
-<li>We compute gradients for all the network parameters and update their values so as to minimise the loss.</li>
+<li>We compute gradients for all the network parameters and update their values so as to minimize the loss.</li>
 </ul>
 <p>Keep on repeating all the above steps for all the training examples, until the loss converges.
-Going through all the training examples for once is known as 1 epoch. We can continue train for multiple epochs until the loss converges.</p>
-<p>Once training is done, we'll end up with such network weights which are far better than initial random weights in prediction, and we can use same weights for inference on a new unseen data.</p>
+Going through all the training examples for once is known as 1 epoch. We can continue to train for multiple epochs until the loss converges.</p>
+<p>Once training is done, we'll end up with such network weights which are far better than initial random weights in prediction, and we can use the same weights for inference on new unseen data.</p>
 
 </div>
 </div>
