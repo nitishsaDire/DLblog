@@ -183,7 +183,7 @@ Now activation function $\phi()$ is applied on the sum, so $y = \phi( \Sigma{(w_
 $y_2 = w.x^T + b$, where $w = w_2.w_1$ and $b = w_2.b_1 + b_2$.</p>
 <p>Therefore, we have replaced 2 linear layers with a single linear layer by changing the weights and bias as mentioned. This could be done even if we have 100s of linear layers stacked upon one another, thus, no matter how deep our network is we can re-write it as a single layer network. If we introduce a non-linear layer in between every 2 linear layers, then we can't replace them with a single neuron. Now each linear layer is actually somewhat decoupled from the other ones and can do its own useful work.</p>
 <p>The addition of a non-linear layer or an activation function increases the power of a neural network. By <em>power</em> I mean our network could approximate any function (neural network could be seen as a function which maps an input $x$ to an output $y$), with accuracy as good as we want, all we have to do is to find the right set of weights and biases to do it. This fact is mathematically proven as a universal approximation theorem.</p>
-<p>We already know that a single nonlinearity with two linear layers is enough to approximate any function. So why would we use deeper models? The reason is performance. With a deeper model (that is, one with more layers) we do not need to use as many parameters; it turns out that we can use smaller matrices with more layers, and get better results than we would get with larger matrices and few layers.$^{**}$</p>
+<p>A single nonlinearity with two linear layers is enough to approximate any function. So why would we use deeper models? The reason is performance. With a deeper model (that is, one with more layers) we do not need to use as many parameters; it turns out that we can use smaller matrices with more layers, and get better results than we would get with larger matrices and few layers.$^{**}$</p>
 
 </div>
 </div>
@@ -253,7 +253,7 @@ $y_2 = w.x^T + b$, where $w = w_2.w_1$ and $b = w_2.b_1 + b_2$.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So, a sigmoid function squashes any real number in the range $(0,1)$, therefore, interpretable as probabilities.
-One of the big disadvantages of the sigmoid function is that its output is not zero-centered.</p>
+One of the big disadvantages of the sigmoid function is that its output is not zero-centered, which will be input to the next layer.</p>
 
 </div>
 </div>
@@ -264,7 +264,7 @@ One of the big disadvantages of the sigmoid function is that its output is not z
 <h5 id="The-problem-if-input-data-is-not-zero-centered-data:">
 <a class="anchor" href="#The-problem-if-input-data-is-not-zero-centered-data:" aria-hidden="true"><span class="octicon octicon-link"></span></a>The problem if input data is not zero-centered data:<a class="anchor-link" href="#The-problem-if-input-data-is-not-zero-centered-data:"> </a>
 </h5>
-<p>Mostly input data is +ve, so if a = WX + b, and X is +ve, then the gradient of W is +ve, or -ve, depending on the value $\frac{\partial{L}}{\partial{a}}$. So if optimal W has both +ve and -ve values, but we end up searching for sub-optimal W. in case of 2-d, if $W_{opt}$ lies in $2^{nd}$ or $4^{th}$ quadrant, but we are only searching only in $1^{st}$ and $3^{rd}$ quadrant.</p>
+<p>Mostly input data is +ve, so if $a = WX + b$, and $X$ is +ve, then the gradient of $W$ is +ve, or -ve, depending on the value $\frac{\partial{L}}{\partial{a}}$. So if optimal $W$ has both +ve and -ve values, but we end up searching for sub-optimal $W$. in case of 2-d, if $W_{opt}$ lies in $2^{nd}$ or $4^{th}$ quadrant, but we are only searching only in $1^{st}$ and $3^{rd}$ quadrant.</p>
 
 </div>
 </div>
@@ -272,7 +272,7 @@ One of the big disadvantages of the sigmoid function is that its output is not z
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Another issue that saturated values kill the gradients during backpropagation, it means that when input is a big positive or a negative number, then the slope of sigmoid in that region is very close to 0. So, in backpropagation, it gives a gradient close to 0 to its previous layers, and therefore no good weight-updation is performed on the network, thus network stops training. This is <a href="https://en.wikipedia.org/wiki/Vanishing_gradient_problem">vanishing gradient problem.</a></p>
+<p>Another issue that saturated values kill the gradients during backpropagation, means that when input is a big positive or a negative number, then the slope of sigmoid in that region is very close to 0. So, in backpropagation, it gives a gradient close to 0 to its previous layers, and therefore very small or practically no weight-updation is performed on the network, thus network stops training. This is <a href="https://en.wikipedia.org/wiki/Vanishing_gradient_problem">vanishing gradient problem.</a></p>
 
 </div>
 </div>
@@ -353,7 +353,7 @@ One of the big disadvantages of the sigmoid function is that its output is not z
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It is the most widely used activation function which is surprisingly simpler than sigmoid, or tanh, and mostly gives better results than them. It is defined as:</p>
+<p>It is the most widely used activation function which is surprisingly mathematically simpler than sigmoid, or tanh, and mostly gives better results than them. It is defined as:</p>
 <p>$RELU(x) = max(x,0)$</p>
 
 </div>
@@ -422,7 +422,7 @@ One of the big disadvantages of the sigmoid function is that its output is not z
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>RELU has one major issue that it suffers from the problem of dying RELU, in which a RELU unit always outputs 0. As grad is 0 when output is 0, therefore no weights updation happens, so RELU is very less likely to recover from this.
+<p>RELU has one major issue that it suffers from the problem of dying RELU, in which a RELU unit always outputs 0. As gradient is 0 when output is 0, therefore no weights updation happens, so the weights remain the same and RELU is very less likely to recover from this during the course of training.
 Dying RELU happens when there is a large grad flow and $W$ becomes big -ve numbers.</p>
 
 </div>
