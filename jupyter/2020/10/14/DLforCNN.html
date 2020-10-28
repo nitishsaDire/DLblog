@@ -220,13 +220,13 @@ $p = p - \alpha\frac{\partial{L}}{\partial(p)}$, where $\alpha$ is known as the 
 <h2 id="Network-Training">
 <a class="anchor" href="#Network-Training" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network Training<a class="anchor-link" href="#Network-Training"> </a>
 </h2>
-<p>Suppose we have set of n training examples as $\{(x_1, y_1), (x_2, y_2), ... , (x_n, y_n)\}$, where $x_i$ is the $i^{th}$ training example and $y_i$ is the true class label for $i^{th}$ training example. We can initialize all the network parameters with randomly small values, and update them after each iteration. The first training step could be defined as:</p>
+<p>Suppose we have set of n training examples as $\{(x_1, y_1), (x_2, y_2), ... , (x_n, y_n)\}$, where $x_i$ is the $i^{th}$ training example and $y_i$ is the true class label for $i^{th}$ training example. We can initialize all the network parameters with randomly small values, and update them after each iteration. The training steps could be defined as:</p>
 <ul>
-<li>Computing neural network output on $x_1$.</li>
-<li>Computing loss as $f(y_1, \hat{y_1})$, where $\hat{y_1}$ is class predicted by the neural network.</li>
-<li>We compute gradients for all the network parameters and update their values so as to minimize the loss.</li>
+<li>Computing neural network output on $x_1, x_2, ..., x_n$.</li>
+<li>Computing loss as $f(y_1, \hat{y_1}), f(y_2, \hat{y_2}), ..., f(y_n, \hat{y_n}) $, where $\hat{y_1}$ is class predicted by the neural network, and taking average value of loss</li>
+<li>We compute gradients of average loss w.r.t. all the network parameters and update their values so as to minimize the loss.</li>
 </ul>
-<p>Keep on repeating all the above steps for all the training examples, until the loss converges.
+<p>Keep on repeating the above steps until the loss converges.
 Going through all the training examples for once is known as 1 epoch. We can continue to train for multiple epochs until the loss converges.</p>
 <p>Once training is done, we'll end up with such network weights which are far better than initial random weights in prediction, and we can use the same weights for inference on new unseen data.</p>
 
