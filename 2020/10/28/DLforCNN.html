@@ -162,7 +162,7 @@ window.onload = wrap_img;
 <h2 id="Stochastic-Gradient-Descent-(SGD)">
 <a class="anchor" href="#Stochastic-Gradient-Descent-(SGD)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stochastic Gradient Descent (SGD)<a class="anchor-link" href="#Stochastic-Gradient-Descent-(SGD)"> </a>
 </h2>
-<p>It's a computational improvement over gradient descent as rather than fedding the whole training data it feds data in batches. So if there are n training examples, then the batch size ($b$) could be $1\leq b \leq n$. Batch-size is chosen based on memory availability. Mathematically,</p>
+<p>It's a computational improvement over gradient descent as rather than feeding the whole training data it feeds data in batches. So if there are n training examples, then the batch size $b$ could be $1\leq b \leq n$. Batch-size is chosen based on memory availability. Mathematically,</p>
 <p>$x_{t+1} = x_t - \alpha.\frac{\partial{L}}{\partial{x_t}}$</p>
 <p>Some of the issues with SGD are:</p>
 <ul>
@@ -235,9 +235,7 @@ Nesterov Momentum update tries to correct this "blindly following the slope" nat
 <p>$v_{t+1} = \rho v_t + \alpha\nabla_{x_t}L(x_t - \rho v_t)$</p>
 <p>$x_{t+1} = x_t - v_{t+1}$</p>
 <p>So here, firstly gradient of loss function L w.r.t to $x_t$ is computed at the approximate future point $x_t - \rho v_t$ (it's approximate because actual future point is $x_t - \rho v_t -$ gradient_of_L_w.r.t_x_t), so we have gradient knowledge of the next point. Now we add accumulated velocities to it and make an update on x.</p>
-<p>This anticipatory update prevents us from going too fast and results in better updates, which has significantly increased performance on DL models.</p>
-<p>Now that we are able to adapt our updates to the slope of our error function and speed up SGD in turn, we would also like to adapt our updates to each individual parameter to perform larger or smaller
-updates.</p>
+<p>This anticipatory update prevents us from going too fast and results in better updates, which has significantly increased performance on DL models. Now, we are able to adapt our updates to the slope of our error function and speed up SGD in turn.</p>
 <p>SGD+Momentum and Nesterov Momentum updates are shown below in the figure. SGD+M computes gradient first (small blue vector) and then takes a step in the net direction of -ve accumulated gradients (big blue vector). Whereas, Nesterov goes in the direction of previously accumulated gradients (big brown vector), then finds gradient at approximate next point, and takes a step in -ve gradient direction (small red vector), so that the resultant direction (big green vector) is different from SGD+M.</p>
 
 </div>
