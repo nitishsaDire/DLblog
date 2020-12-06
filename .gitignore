@@ -8,7 +8,6 @@ _site
 .jekyll-metadata
 vendor
 _notebooks/.ipynb_checkpoints
-_notebooks/2020-11-24-DLforCNN.ipynb
 # Local Netlify folder
 .netlify
 .tweet-cache
