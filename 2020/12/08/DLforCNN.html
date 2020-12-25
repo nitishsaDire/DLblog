@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Introduction to Convolutional Neural Network (CNN) PART II | DLBlog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Introduction to Convolutional Neural Network (CNN) PART II" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Explains the basics, motivation, and working of a CNN which is used for image recognition tasks." />
+<meta property="og:description" content="Explains the basics, motivation, and working of a CNN which is used for image recognition tasks." />
+<link rel="canonical" href="https://nitishsadire.github.io/DLblog/2020/12/08/DLforCNN.html" />
+<meta property="og:url" content="https://nitishsadire.github.io/DLblog/2020/12/08/DLforCNN.html" />
+<meta property="og:site_name" content="DLBlog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-08T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://nitishsadire.github.io/DLblog/2020/12/08/DLforCNN.html","@type":"BlogPosting","headline":"Introduction to Convolutional Neural Network (CNN) PART II","dateModified":"2020-12-08T00:00:00-06:00","datePublished":"2020-12-08T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://nitishsadire.github.io/DLblog/2020/12/08/DLforCNN.html"},"description":"Explains the basics, motivation, and working of a CNN which is used for image recognition tasks.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/DLblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://nitishsadire.github.io/DLblog/feed.xml" title="DLBlog" /><link rel="shortcut icon" type="image/x-icon" href="/DLblog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/DLblog/">DLBlog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/DLblog/about/">About Me</a><a class="page-link" href="/DLblog/search/">Search</a><a class="page-link" href="/DLblog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Introduction to Convolutional Neural Network (CNN) PART II</h1><p class="page-description">Explains the basics, motivation, and working of a CNN which is used for image recognition tasks.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-12-08T00:00:00-06:00" itemprop="datePublished">
+        Dec 8, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/nitishsaDire/DLblog/tree/master/_notebooks/2020-12-08-DLforCNN.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/DLblog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/nitishsaDire/DLblog/master?filepath=_notebooks%2F2020-12-08-DLforCNN.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/DLblog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/nitishsaDire/DLblog/blob/master/_notebooks/2020-12-08-DLforCNN.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/DLblog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-12-08-DLforCNN.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+<p>In the first part we discussed about the fundamentals of a CNN model. We learnt how the convolution layer detect various patterns present in the input image. The later convolution layers detect more complex patterns, and so we generally keep on increasing the number of channels as we move to more deeper layers. In this post, we will train a NN and CNN on the MNIST dataset, and will compare the results.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lets load the MNIST dataset in to a dataloader.</p>
+<p>(ImageBlock(cls=PILImageBW), CategoryBlock) Tells the input is an image, and output will be one category per input image. There are total 10 categories (0-9).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">MNIST</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">im3</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="o">/</span><span class="s1">'3'</span><span class="o">/</span><span class="s1">'12.png'</span><span class="p">)</span>
+<span class="n">show_image</span><span class="p">(</span><span class="n">im3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f3f9e696940&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAABYCAYAAACeV1sKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAABAJJREFUeJzt2k0obV8cxvHvESLChIgwMfCaEKWIgZEkSWZmZuZK6UwYSQaSCUUp8jIwEAOlvISJKRkoZogQyvt/4L/se9193OO0z2+f7f4+Q+fYe3l6WvZae/ne3t5Q4RXl9gD+BRqyAA1ZgIYsQEMWoCEL0JAFaMgCooXv95NXPr5AH2iTBWjIAjRkARqyAA1ZgIYsQEMWoCEL0JAFSK/4bD0+PgKwtrYGQHx8PABbW1sAXF9fAzA8PAxAS0sLAFlZWQGvmZmZCUBzczMA2dnZTg87aNpkAT7hF6m2NxsYGACgu7vb8RtGRb33qKKiAoDOzk4AWltbAUhJSXHqVrp34aaIaHJBQQEABwcHtr+UlpYGQE1NzZcXz8/PB2B/f5+zszMANjY2bL+7t7cHQGlp6d/GHCxtspsi4ulic3MTgJOTE+DPJ4HY2FgAEhMTg77mw8MDAIWFhQAcHR399vnc3BzgaJMD0iYLiIg5ORzW19cBqKur++3ncXFxwPu8DZCTk+PULXVOdlNEzMlOeXl5AcDv9zM0NGT7ncPDQ+Dr1aLTtMkCfkSTzfP1+Pg4AIODgx+fxcTEALCwsABAenq68Oi0ySI83eTj42MAiouLAWtO/pXZuzBzsM8X8CEgbLTJAjzd5JmZGcC+wYZZ+ZWVlQFQX18PQHt7OwBNTU0AZGRkhG2cnl6MmKWy3+8HYHV1FYDT09Ogr2Gmk/7+fgC6uroASEhI+O5wdDHiJk83+TPzmurm5obLy0sApqenAevFwN/+XvNqa35+HvjWP0ptspt+VJO/YjaM+vr6AGv+DmRiYgKAjo6OYG+hTXaTpx/hvqO2thaAlZUVwHqRuri4aPt9sxXqBG2ygH+myYZ5Lq6qqgICN7moqMi5ezp2JRWQp5p8e3sLwNTUFAAlJSUAVFdXB32N19dXwDoS8Fl09HsklZWVIY/zM22yAE802TS4oaEBgN3dXQDu7++Dvsbd3R0Ao6OjgLWi+6y8vByAvLy80AZrQ5sswBNNNgcRTYONi4sLwDrGZV41ATw9PQEwNjYGQE9PD2DtbxhmxZucnAzA5OSko2MHbbIIT+xdLC8vA9DY2Gj7uTmImJqa+vGz8/NzIPCBQyMpKQmA7e1twDq0GALdu3CTJ5p8dXUFQG9vLwAjIyMhD8A8B5s3IW1tbQDk5uaGfM3/aZPd5IkmG8/PzwDs7OwAsLS0BFj7DLOzsx/fNQfLDTOfm8aG4ZiWNtlNnmpyhNMmu0lDFqAhC9CQBWjIAqR34eTPrUYAbbIADVmAhixAQxagIQvQkAVoyAI0ZAEasgANWYCGLEBDFqAhC9CQBWjIAjRkARqyAA1ZgIYsQEMWoCEL0JAFaMgC/gNvPQ1hmDMVOwAAAABJRU5ErkJggg==%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">DataBlock</span><span class="p">((</span><span class="n">ImageBlock</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">PILImageBW</span><span class="p">),</span> <span class="n">CategoryBlock</span><span class="p">),</span> 
+                  <span class="n">get_items</span><span class="o">=</span><span class="n">get_image_files</span><span class="p">,</span> 
+                  <span class="n">get_y</span><span class="o">=</span><span class="n">parent_label</span><span class="p">)</span>
+
+<span class="n">dls</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="s1">'training'</span><span class="p">)</span>
+<span class="n">xb</span><span class="p">,</span><span class="n">yb</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span>
+<span class="n">xb</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">yb</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>((64, 1, 28, 28), (64,))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Batch-size is taken as default value 64, the input image is of dimension $1\times 28 \times 28$.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Total mini-batches in training dataset are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">train</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Total mini-batches in validation dataset are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dls</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total mini-batches in training dataset are 750
+Total mini-batches in validation dataset are 188
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Total classes = </span><span class="si">{</span><span class="n">dls</span><span class="o">.</span><span class="n">c</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total classes = 10
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Convolutional Block</strong>:
+I have defined a function <em>block()</em> which takes 3 parameters exaplained as follows:</p>
+<ol>
+<li>
+<strong>ni</strong>: This is the number of channels in the input image.</li>
+<li>
+<strong>nf</strong>: This is total number of filters, or number of channels in the output image.</li>
+<li>
+<strong>stride</strong>: It is the value of stride, default 2, which will be used while convolving filter on the input.</li>
+</ol>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">block</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ConvLayer</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>CNN Model:</strong> The CNN model I have defined below continuously halves the input grid size by using a stride of two, and so it doubles the number of channels. After the fourth convolutional layer, the output is of size $4\times 4 \times 64$, on it, adaptiveAvgPool2d is applied. It converts the 2x2 grid into the desired shape (passed as 1, therefore it will convert 2x2 into 1x1). The output of this will be of shape $1\times 1\times 64$ which is flattened and put into an fc layer.</p>
+<p><strong>NN Model</strong> A simple neural network model is also implemented which has 2 layers.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>def get_model():
+    basic_cnn = nn.Sequential(
+        block(1, 8),
+        block(8, 16),
+        block(16,32),
+        block(32,64),
+        nn.AdaptiveAvgPool2d(1),
+        Flatten(),
+        nn.Linear(64, 10)
+    )
+    return basic_cnn</p>
+<p>def get_nn():
+    basic_nn = nn.Sequential(
+        nn.Flatten(),<br>
+        nn.Linear(784, 512),
+        nn.Linear(512, 10)
+    )
+    return basic_nn</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's create a learner that we will use to train both the models.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_learner</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Learner</span><span class="p">(</span><span class="n">dls</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">loss_func</span><span class="o">=</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(),</span> <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">get_learner</span><span class="p">(</span><span class="n">get_nn</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">lr_find</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>SuggestedLRs(lr_min=0.002754228748381138, lr_steep=0.00363078061491251)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYsAAAEOCAYAAAB4nTvgAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAIABJREFUeJzt3XmcXGWd7/HPr3pNr9m6O510ZyORJJAQkmZfZFM2hy2IMA6IolwUFa8OOjpznTvXcUAddRRejiIoy7CILAIqIqLIFiBNyEYCCYSEdJJesvSWdPX6u39UEWLo7qp0V/Wpqv6+X6960VX11Dm/h07qm3PO85zH3B0REZHBhIIuQEREUp/CQkREYlJYiIhITAoLERGJSWEhIiIxKSxERCQmhYWIiMSksBARkZgUFiIiEpPCQkREYsoOuoCDNXHiRJ8+fXrQZYiIpJVXXnllh7uXDfXzaRcW06dPp7a2NugyRETSipltHs7ndRpKRERiUliIiEhMCgsREYlJYSEiIjEpLEREJCaFhYiIxDSqw2LFlmZaw91BlyEikvLSbp5Fotz01Aa+/+R6CnKzWLKoik8cP41Z5cVBlyUikpJGZVj8+KkN/ODJ9Zy7oJL87Cx+tWwLd724mZNmT+TSo6Zy+txy8nOyRryuvj5na3MHbza1kxMKMbYgh9IxOYwtyKEoLxszi2s77Z09vNXYTk5WiJIx2ZSOyaEwN/KrDvf0srerl46uXgAK87IpyM0iLzsU9/ZFZPQZdWHxX39az3/9aQMXLZrC9y4+gqyQ8Y1z5nDfsi3ctXQz196znMLcLD40r4LzFk5mQdVYWjq6ad7bxa493XT39nFIWREzJhaSmz34Wbw9nT28vWMPreFuskMhsrOM7JDR3dtHU1sXTe2dNLV1Ut/SwfqGdjY0tLEn+iV+oLzsEBUl+UwqyaeiNJ8Jhbnk5YTIy84iPydEd4/zRkMra7e1smnn3vd9PmTQ5wPXmhUyivKyGV+Yu+8xoTCXipJ8Kksj+6wszWdcQS7F+dmMycnaFy49vX00d3Sze08XO/d0sSPar6a2Tpo7uskJGbnZIXKzI/WOK8hhQlEeEwpzmVCUS25WFj19ffT0OT29kSJzs42crNC+R+SzIXKzQoRCCjWRkWbug3yDpKCamhof6u0+fvjken701AaWLKriuxcvIOuAL53ePueljTt5dOU2Hl9TT0vHwNczskPGzLJCZpUXkZ/93lGIA9tbOnh7xx4aWjtj1mQGEwrzmF1exKGTijl0UjGzyotwh+a9XTRHg2pHexf1LWHqW8M0tIbZtaeLrp4+Onv69m1r2oQC5lWWMK+yhA9MKsbdaenoprWjh9ZwN2ZGQW4WY3KyGJMbqbmjq5c9XT3s6eyhLdzDrj1d+x472jvZuaeL/v6IZIeM4vxsevuc1nDPgP+PSsfk0NPn0Vp7Bw2seOVmhRhfmEt5SR7lxXmUFUdCtLI0n0ml7/23OD9n+DsTyRBm9oq71wz586MlLH5du4XrH1jFRxdXceOS9wfFgbp6+njuzSY279zLuIJcxhbkML4wl5AZbzW180Z9G+sb2tjYtIfuvve+sN2hoiSfGRMLmTGxkJkTCxlbkEtvn0f+9dzrZIWMsuI8yooj/7rOzhr6OAN33xcYyTh11tXTR2NbJKC2t4Rp3ttNW7iHtnA3reFusswYV5jLuIJcxhXmMr4gd1/fxo7Jed9RQFdPH80dXexsfy+Qeno9etQViv5enO5ep7u3j66eProO+G+4u48d7Z00tnXS2BqmqS0Sagcqzsumcmw+laVjKCvOIz96JJaXHSI/J4uJRXlUlORRXpxPeUke4wtzyRnG70IklSks4rS3q4e7X3yHq06codMYGaizp5fG1k7qW8Nsa+6gviUSbtuaO9jeEmZneyed0SOxd4OnPyX5kVNx7wbfuOjpuHHRU3NlxXmUFSUm6EVG0nDDYtRcsyjIzeYzJ88MugxJkrzsLKrHF1A9viCu9l097x2dNLSGaWzrZFd7F7v3vncarr41zNrtreyMnvI7UMhgUkk+VeMKqBo3JvIYX0D1uAKqx4+hsnRMzCNYkXQxasJCZH+52SEmjx3D5LFjYrZ1dzq6e9nZ/t6ghKboKbC65g7qdnfw0tu7+M2Kjr+5JpMdMqaOL2BmWRGHlBdyyMQiZlcUMWdSyb5rRiLpQmEhEkNkYEA2BeOzBz1y6e7tY3tzmHd27WXL7r28s2svbzftYeOOdp5Z37Tv1FfIYMbEQuZWlrCgqpTT51ZwSFnRSHVHZEiSds3CzKqBO4EKIoOEbnH3Hx3Q5nzgW0Af0AN8yd2fG2y7wxkNJRKUnt4+6nZ38EZDG2u3tbJueytrt7dSt7sDgFnlRZx5WAVnHjaJ+VNKNedFEi5lL3CbWSVQ6e7LzawYeAW4wN3X7temCNjj7m5mC4D73X3OYNtVWEgm2drcwZOv1fPEaw28vGkXvX1O1bgxnDO/knPmV3JElYJDEiNlw+J9OzJ7BLjZ3Z8c4P3jgF+4+9zBtqOwkEy1e08XT65r4Pert/P8mzvo7nWmjB3DWYdP4pz5kziyepxG8smQpUVYmNl04BngcHdvPeC9C4EbgHLgXHdfOti2FBYyGrTs7d4XHM9t2EFXbx8VJXmcedgkzl84mUVTx+mIQw5KyodF9FTTX4Fvu/tDg7Q7Gfimu5/Rz3tXA1cDTJ06dfHmzcNad1wkrbSFu/nz6408vrqep9c3Eu7uY86kYi4/bhoXLJxCYZ7GqUhsKR0WZpYD/BZ4wt1/EEf7jcDR7r5joDY6spDRbE9nD4+u3MZdSzezdnsrRXnZLFk0hU+eMIPpEwuDLk9SWMqGhUWOke8Adrn7lwZoMwt4K3qBexHwGFDlgxSlsBCJzP14dUsz/7N0M79dtZ3uvj4+PK+Cz5w0k8XTdIpK3i+Vw+JE4FlgNZGhsQDfAKYCuPtPzexrwBVAN9ABXK+hsyIHp7EtzJ0vbOZ/XtpM895ujpw6lus/fCjHz5oYdGmSQlI2LJJFYSHSv71dPTzwSh0/++tGtjZ3cMqhZfzT2XOYM6kk6NIkBSgsRORvhLt7uWvpZm768wbaOntYsqiKr555KOUl+UGXJgEabljolpkiGSY/J4vPnDyTZ756Kp85aSaPrtjG6d//K3cu3URvIhYUkVFJYSGSocYW5PKNc+byxP8+mSOqx/LNR17jop88z5qtLUGXJmlIYSGS4WZMLOSuq47mR5cuZGtzmPNufo4bHl/X723XRQaisBAZBcyM8xdO4amvfJBLaqr52V838tGfvsDmnXuCLk3ShMJCZBQpHZPDjUsW8N8fX8TbO/Zw7o+f45EVW4MuS9KAwkJkFDp7fiW/v+4k5kwq5rr7VvD1h1bRM8BSsyKgsBAZtarGFXDf1cfyuVMO4d6Xt3DtPcvp7OkNuixJUQoLkVEsOyvEV8+aw//9u3k88VoDn76jlr1dPUGXJSlIYSEiXHnCDL578QKef3MHV9z2Mq3h7qBLkhSjsBARAC6pqeamyxaxsq6Zv//5izTv7Qq6JEkhCgsR2efcBZXccnkN6+vb+cQvdIQh71FYiMjfOHVOOT/5+CJe29bKJ3+5jD2duoYhCgsR6ccZ8yq46bIjWbGlmavuWEZHl0ZJjXYKCxHp19nzK/nBJUfw0tu7uPquWg2rHeUUFiIyoPMXTuE7Fy3g2Q07+KcHV5NuSxpI4mildxEZ1CVHVdPQGub7T67nkLJCPn/a7KBLkgAoLEQkps+fNou3mtr5zz+uZ8bEIs5dUBl0STLCdBpKRGIyM25csoDF08bx5ftXsHJLc9AlyQhTWIhIXPJzsvjZ5YspK87j03fWsq25I+iSZAQlLSzMrNrM/mJma83sNTO7rp82HzezVWa22sxeMLMjklWPiAzfxKI8bvvEUXR09fKV+1fqgvcokswjix7gK+4+DzgWuNbM5h3Q5m3gg+4+H/gWcEsS6xGRBDh0UjFfP2cOSzfu5P7aLUGXIyMkaWHh7tvdfXn05zZgHTDlgDYvuPvu6NMXgapk1SMiiXPZUVM5esZ4/v1362hsDQddjoyAEblmYWbTgSOBlwZpdhXw+EjUIyLDEwoZN140n86ePv710deCLkdGQNLDwsyKgAeBL7l76wBtTiUSFl8b4P2rzazWzGqbmpqSV6yIxG1mWRHXnT6bx9fU84c19UGXI0mW1LAwsxwiQXG3uz80QJsFwK3A+e6+s7827n6Lu9e4e01ZWVnyChaRg3L1yTOZV1nCNx9ZQ0uH7lCbyZI5GsqA24B17v6DAdpMBR4CLnf39cmqRUSSIycrxHeWLGBHeyc3Pv560OVIEiXzyOIE4HLgNDNbEX2cY2bXmNk10TbfBCYAP4m+X5vEekQkCeZXlfKpE2Zw78vvsPyd3bE/IGnJ0m2cdE1NjdfWKlNEUkl7Zw+nf/9pyorzeOTaE8kKWdAlyQHM7BV3rxnq5zWDW0SGrSgvm385dx5rtrZy90ubgy5HkkBhISIJ8ZEFlZwwawLfe+INdrR3Bl2OJJjCQkQSwsz4t/MOJ9zdyw2/18XuTKOwEJGEmVVexKdPmsmDy+tYtmlX0OVIAiksRCShvnDaLCaX5vN/frOG3r70GkAjA1NYiEhCFeRm841z5/J6fRsPv7o16HIkQRQWIpJw5xxeyfwppfzwyfV09vQGXY4kgMJCRBIuFDK+etahbG3u4J6X3gm6HEkAhYWIJMWJsyZy/CETuPnPb9Le2RN0OTJMCgsRSQoz46tnzWHnni5ue/btoMuRYVJYiEjSLKwey1mHTeLnz25kpybqpTWFhYgk1T+e+QH2dvXwk6ffCroUGQaFhYgk1azyYpYsquKupZvZ1twRdDkyRAoLEUm6686YjeP8t44u0pbCQkSSrmpcARcvruJXy7ZQ3xIOuhwZAoWFiIyIz50yiz53fvpXHV2kI4WFiIyI6vEFXLRoCve+/A6NrTq6SDcKCxEZMdeeOouePudnz2wMuhQ5SAoLERkx0yYUcv7Cydz90maa2jTvIp0oLERkRH3+1Fl09fTx82d1dJFOkhYWZlZtZn8xs7Vm9pqZXddPmzlmttTMOs3sH5NVi4ikjpllRZx3xGTuWrpZs7rTSDKPLHqAr7j7POBY4Fozm3dAm13AF4H/TGIdIpJiPn/abMI9vdy5dHPQpUickhYW7r7d3ZdHf24D1gFTDmjT6O7LgO5k1SEiqWdWeREnzprIr2u3aDW9NDEi1yzMbDpwJPDSSOxPRFLfpUdNZVtLmGc2NAVdisQh6WFhZkXAg8CX3L11iNu42sxqzay2qUl/sEQywYfmVTC+MJdfvbwl6FIkDkkNCzPLIRIUd7v7Q0Pdjrvf4u417l5TVlaWuAJFJDC52SGWLJrCn9Y1aBhtGkjmaCgDbgPWufsPkrUfEUlfHztqKj19zgOv1AVdisSQzCOLE4DLgdPMbEX0cY6ZXWNm1wCY2SQzqwO+DPyLmdWZWUkSaxKRFDKrvIijp4/nV8vewV0XulNZdrI27O7PARajTT1QlawaRCT1feyoar7y65W8uHEXxx0yIehyZACawS0igTpnfiXF+dn8atk7QZcig1BYiEigxuRmccHCKfx+TT3Ne7uCLkcGoLAQkcBdenQ1XT19PPzq1qBLkQEoLEQkcIdNLmVBVSn3vKQL3alKYSEiKeEfjp3GhsZ2lm7cGXQp0g+FhYikhPOOmMzYghzu0s0FU5LCQkRSQn5OFh+rqeaPaxvY3tIRdDlyAIWFiKSMfzh2Gn3u3PuShtGmGoWFiKSM6vEFnHpoOfe8vIWunr6gy5H9KCxEJKVcftw0drR38via7UGXIvtRWIhISvng7DKmTSjQhe4Uo7AQkZQSChmXHzuN2s27WbttSEvgSBIoLEQk5Xx0cTX5OSHuenFT0KVIlMJCRFJOaUEO5x8xhYdf3ar7RaWIuMLCzA4xs7zoz6eY2RfNbGxySxOR0ewTx08n3N3H/bVadjUVxHtk8SDQa2azgFuAauCepFUlIqPevMklHDNjPHe8sJnePt0vKmjxhkWfu/cAFwI3ufv1QGXyyhIRgSuPn87W5g7+tK4h6FJGvXjDotvMLgM+Afw2+lpOckoSEYn40LwKJpfmc8cLm4IuZdSLNyw+CRwHfNvd3zazGcBdyStLRASys0Jcftx0XnhrJ2/UtwVdzqgWV1i4+1p3/6K732tm44Bid/9OkmsTEeHSo6rJyw5xu44uAhXvaKinzazEzMYDy4Gfm9kPYnym2sz+YmZrzew1M7uunzZmZj82szfNbJWZLRpaN0QkU40rzOXCI6fw8Kt1tOztDrqcUSve01Cl7t4KXATc6e7HAGfE+EwP8BV3nwccC1xrZvMOaHM2MDv6uBr477grF5FR491htL+q1d1ogxJvWGSbWSVwCe9d4B6Uu2939+XRn9uAdcCUA5qdTyR83N1fBMZG9yMiss/cSg2jDVq8YfH/gCeAt9x9mZnNBDbEuxMzmw4cCbx0wFtTgP1n3NTx/kAREeGK4yLDaF94a0fQpYxK8V7g/rW7L3D3z0afb3T3JfF81syKiEzq+1L0VNZBM7OrzazWzGqbmpqGsgkRSXOnzy2nOD+b37y6LehSRqV4L3BXmdnDZtYYfTxoZlVxfC6HSFDc7e4P9dNkK5HZ4O+qir72N9z9FnevcfeasrKyeEoWkQyTn5PF2YdP4onX6gl39wZdzqgT72moXwKPApOjj8eirw3IzAy4DVjn7gONnHoUuCI6KupYoMXdteKJiPTrgoVTaO/s0YzuAMQbFmXu/kt374k+bgdi/RP/BOBy4DQzWxF9nGNm15jZNdE2vwc2Am8CPwc+N4Q+iMgocczMCVSU5PGbV993AkKSLDvOdjvN7B+Ae6PPLwN2DvYBd38OsBhtHLg2zhpEZJTLChnnHTGZXz6/id17uhhXmBt0SaNGvEcWnyIybLYe2A5cDFyZpJpERAZ0/sIp9PQ5v1utM9YjKd7RUJvd/Tx3L3P3cne/AIhrNJSISCIdNrmEWeVFPLJCp6JG0nBWyvtywqoQEYmTmXHBwsks27Sbut17gy5n1BhOWAx6PUJEJFnOXxiZu/vICs25GCnDCQvNuReRQFSPL2DxtHE8smIrkXEykmyDhoWZtZlZaz+PNiLzLUREAnHBwsmsb2hn7fYh3RhCDtKgYeHuxe5e0s+j2N3jHXYrIpJwH1kwmdzsEPe9vCV2Yxm24ZyGEhEJzLjCXD6yoJKHltfRFtY6F8mmsBCRtHXFcdPZ09XLQ8s1jDbZFBYikrYWVo/liKpS7npxsy50J5nCQkTS2uXHTefNxnaWvjXoHYhkmBQWIpLWPrKgknEFOdy5dHPQpWQ0hYWIpLX8nCw+dtRU/ri2nm3NHUGXk7EUFiKS9j5+zFQcuOeld4IuJWMpLEQk7VWPL+D0OeXct+wdOnu0il4yKCxEJCNccdx0drR38fjq+qBLyUgKCxHJCCfOmsj0CQXctywzT0W9uHFnoNdkFBYikhFCIWPJoipe3LiLLbsy69bl7s4Vt73MHUs3BVaDwkJEMsaFiyK3Ln84w9bo3r23m67ePiqK8wOrQWEhIhmjalwBxx8ygQeX12XUjO76ljAAk0ozMCzM7Bdm1mhmawZ4f5yZPWxmq8zsZTM7PFm1iMjosWRRFZt37qV28+6gS0mYhrZIWFSU5AVWQzKPLG4Hzhrk/W8AK9x9AXAF8KMk1iIio8RZh0+iIDeLB1+pC7qUhGloeTcsMvDIwt2fAXYN0mQe8Odo29eB6WZWkax6RGR0KMzL5uzDK/ntqu10dGXGnIuG1k4AykfpNYuVwEUAZnY0MA2oCrAeEckQFy+uor2zhz+uzYw5F/WtYSYU5pKbHdxXdpBhcSMw1sxWAF8AXgX6/WeAmV1tZrVmVtvU1DSSNYpIGjpmxnimjB3DAxlyKqqhNRzoKSgIMCzcvdXdP+nuC4lcsygDNg7Q9hZ3r3H3mrKyshGtU0TST2TOxRSee3MH21vS/+aCDa3hQEdCQYBhYWZjzSw3+vTTwDPurpXXRSQhliyuwj0z5lxEjiyCGwkFyR06ey+wFDjUzOrM7Cozu8bMrok2mQusMbM3gLOB65JVi4iMPtMmFHLU9HHcv2wLfX3pO+eiq6ePHe1dgZ+Gyk7Wht39shjvLwU+kKz9i4hccdx0vnDvq/z59UbOmJeegy2b2iMjoYIOC83gFpGMdfbhk5hcms9tz70ddClDtm/2tsJCRCQ5srNCfOL46SzduJPXtrUEXc6QNLYGPyEPFBYikuEuPXoqBblZaXt0Ud8a/K0+QGEhIhmudEwOl9RU89jKbfv+lZ5O6lvD5GQZ4wtzYzdOIoWFiGS8T54wnZ4+564XNwddykFrbO2kvDgfMwu0DoWFiGS8aRMKOWNuBf/z4mbC3el1v6j6luAn5IHCQkRGiatOnMHuvd08tDy9Juk1tIUDHwkFCgsRGSWOmTGewyaX8Ivn306rhZEaWsKUB3xxGxQWIjJKmBlXHj+dNxvb02ZhpLZwN3u6enVkISIyks5dUElhbhYP1KbH3WjfXcci6DkWoLAQkVGkIDebc+ZX8rvV29nb1RN0OTE1pMiEPFBYiMgo8+7CSE+8lvoLI70bFhoNJSIywo6aPp6p4wvSYmGkVJm9DQoLERllIgsjVfHCWzup27036HIG1dASpjg/m4LcpN0gPG4KCxEZdS5aNCWyMFKKz7loaO1MiesVoLAQkVGoenwBx82cwAPL61J6zkV9a2pMyAOFhYiMUhcvrmLzzr0pPeeisTWsIwsRkSCdPX9SSs+56OtzGts6U+LiNigsRGSUSvU5Fzv2dNLT5ykxbBYUFiIyir075+IPa1JvzkVjCs3eBoWFiIxi7865eHB56p2Kenft7YwPCzP7hZk1mtmaAd4vNbPHzGylmb1mZp9MVi0iIv1J5TkXDW3R2duZHhbA7cBZg7x/LbDW3Y8ATgG+b2bBrhsoIqNOqs65aGgJEzKYWJQaX4tJCwt3fwbYNVgToNgiawUWRdum3lUmEcloqTrnor41zMSiPLKzUuNqQZBV3AzMBbYBq4Hr3L2vv4ZmdrWZ1ZpZbVNT00jWKCKjQCrOuWho7UyZkVAQbFicCawAJgMLgZvNrKS/hu5+i7vXuHtNWVnZSNYoIqNAKs65aGgNU16ssAD4JPCQR7wJvA3MCbAeERml9p9z0dHVG3Q5QPRWH6WpMSEPgg2Ld4DTAcysAjgU2BhgPSIyiqXSOhfh7l6a93ZTMRqOLMzsXmApcKiZ1ZnZVWZ2jZldE23yLeB4M1sNPAV8zd13JKseEZHBHDV9PNXjx6TEOhf7JuSl0DWLpN0k3d0vi/H+NuDDydq/iMjBeHfOxY+e2sDW5g6mjB0TWC1v79wDQPW4gsBqOFBqjMkSEUkBSxZV4Q73L9sSaB2r65oBOGxKv2N+AqGwEBGJqh5fwGlzyrn7pc2Eu4O70L2yroWZZYWU5OcEVsOBFBYiIvv59Ikz2NHexSMrgpvRvbquhQVTSgPbf38UFiIi+znukAnMqyzh1mffDmRGd2NrmPrWMPOrxo74vgejsBAR2Y+Z8ZmTZ7ChsZ2n14/8HSNWb20BYEGVjixERFLaufMnU1GSx63PjvzUr1V1LYQM5lWmzsVtUFiIiLxPbnaIK4+fwfNv7mTtttYR3ffqrS3MKi+iMC9pMxuGRGEhItKPvz96KgW5Wdz63MgdXbg7q+paWJBi1ytAYSEi0q/SghwuqanmsZXbaGgNj8g+t7eE2dHemXLXK0BhISIyoE+dMIPePuf2FzaNyP5W1UUubs9PsWGzoLAQERnQ1AkFnDG3gvuXbaGrp9/ldhJq9dZmskPG3BS7uA0KCxGRQV12zFR27uniqXUNSd/XqroWPlBRTH5OVtL3dbAUFiIigzh5dhmVpfncm+T7Rbk7q7e2pOT1ClBYiIgMKitkfLSmmmc3NFG3e2/S9lO3u4Pmvd0pORIKFBYiIjFdUlMFwP1JXHZ1ZfROszqyEBFJU1XjCjhpdhm/rt1Cb19y7he1uq6F3KwQH6goTsr2h0thISISh0uPqmZ7S5hnNiTnflGr6lqYW1lMbnZqfi2nZlUiIinmjLkVTCjM5b6X30n4tvv6nDVbW5ifoqegQGEhIhKX3OwQSxZX8dS6RhrbEjuje9POPbR19rBgSmpe3AaFhYhI3C6pqaanz3nwlcQujPTuzO0F1aPwyMLMfmFmjWa2ZoD3rzezFdHHGjPrNbPxyapHRGS4ZpUXcfT08dy5dBNvNbUnbLt/Xd/EuIIcZpen5sVtSO6Rxe3AWQO96e7fc/eF7r4Q+DrwV3fflcR6RESG7WtnzyHc3ct5Nz2XkKVXu3v7+PPrjZw2p4KskCWgwuRIWli4+zNAvF/+lwH3JqsWEZFEWTxtHL/74knMrSzhuvtW8PWHVhPu7h3y9pZt2kVLRzcfmleRwCoTL/BrFmZWQOQI5MGgaxERicfksWO49+pj+ewph3Dvy+9w4U9eoKWje0jb+tPaRnKzQ5w0e2KCq0yswMMC+Dvg+cFOQZnZ1WZWa2a1TU0jvyauiMiBcrJCfO2sOdx6RQ2v17fyk7+8edDbcHeeXFfPibMmptzKeAdKhbC4lBinoNz9FnevcfeasrKyESpLRCS2M+ZVsGRRFb98fhPv7Dy4e0e90dDGll0dKX8KCgIOCzMrBT4IPBJkHSIiw/GPHz6UrJDxnT+8flCfe/K1yG3PT59TnoyyEiqZQ2fvBZYCh5pZnZldZWbXmNk1+zW7EPiju+9JVh0iIsk2qTSf//XBmfxu9XZqN8U/qPNP6xpYWD2W8pL8JFaXGMkcDXWZu1e6e467V7n7be7+U3f/6X5tbnf3S5NVg4jISLn65JlUlOTxrd+toy+Omw02tIZZWdeSFqegIDWuWYiIpL2C3GyuP3MOK7c089iqbTHbP7k2cgpKYSEiMspcdOQUDptcwnf/8EbMuRdPrm1g2oQCZpcXjVB1w6OwEBFJkFDI+Jdz57G1uYNLfraUlVua+23X3tnD0rd28qG5FZil7qzt/SksREQS6LhDJnDz3x9JfUuYC37yPN94eDXNe7uv+tNFAAAHwUlEQVT+ps0z65vo6u3jjDQ5BQWQ2rNARETS0EcWTOaDHyjjh09u4I6lm3h89XYWVo+lvrWTxtYwO/d0MbYgh5pp44IuNW4KCxGRJCjOz+GbfzePj9ZUccPjr9PY1snk0nwWVo9lUkk+x8+aQHZW+pzcUViIiCTR3MoS7vzU0UGXMWzpE2siIhIYhYWIiMSksBARkZgUFiIiEpPCQkREYlJYiIhITAoLERGJSWEhIiIxmXvs+66nEjNrAjbv91Ip0BLnzxOBHcPY/f7bHEq7/l6P9Voq9GmwNvH0abDn6lN8UqVP+7+Wbn0a6L1U6VO8rw/1+2Gauw99XWp3T+sHcEu8PwO1idrXUNr193qs11KhT4O1iadPgz1Xn9KrTwe8llZ9Gui9VOlTvK+P5PfD/o9MOA312EH+nKh9DaVdf6/Hei0V+jRYm3j6NNhz9Sk+qdKnRPUn3m0lsk8DvZcqfYr39ZH8ftgn7U5DDYeZ1bp7TdB1JJL6lB7Up/SQaX1KZH8y4cjiYNwSdAFJoD6lB/UpPWRanxLWn1F1ZCEiIkMz2o4sRERkCBQWIiISk8JCRERiUlhEmdlJZvZTM7vVzF4Iup5EMLOQmX3bzG4ys08EXU8imNkpZvZs9Hd1StD1JIqZFZpZrZl9JOhahsvM5kZ/Pw+Y2WeDricRzOwCM/u5mf3KzD4cdD2JYGYzzew2M3sgnvYZERZm9gszazSzNQe8fpaZvWFmb5rZPw22DXd/1t2vAX4L3JHMeuORiD4B5wNVQDdQl6xa45WgPjnQDuSTOX0C+Bpwf3KqjF+C/i6ti/5dugQ4IZn1xiNBffqNu38GuAb4WDLrjUeC+rTR3a+Ke5+ZMBrKzE4m8gVyp7sfHn0tC1gPfIjIl8oy4DIgC7jhgE18yt0bo5+7H7jK3dtGqPx+JaJP0cdud/+ZmT3g7hePVP39SVCfdrh7n5lVAD9w94+PVP39SVCfjgAmEAnAHe7+25Gp/v0S9XfJzM4DPgvc5e73jFT9/Unw98P3gbvdffkIld+vBPcpru+G7MSVHxx3f8bMph/w8tHAm+6+EcDM7gPOd/cbgH4P9c1sKtASdFBAYvpkZnVAV/Rpb/KqjU+ifk9Ru4G8ZNR5MBL0ezoFKATmAR1m9nt370tm3QNJ1O/I3R8FHjWz3wGBhkWCfkcG3Ag8HnRQQML/LsUlI8JiAFOALfs9rwOOifGZq4BfJq2i4TvYPj0E3GRmJwHPJLOwYTioPpnZRcCZwFjg5uSWNmQH1Sd3/2cAM7uS6JFTUqs7eAf7OzoFuIhImP8+qZUN3cH+XfoCcAZQamaz3P2nySxuiA729zQB+DZwpJl9PRoqA8rksDho7v6vQdeQSO6+l0gAZgx3f4hICGYcd7896BoSwd2fBp4OuIyEcvcfAz8Ouo5EcvedRK7BxCUjLnAPYCtQvd/zquhr6Ux9Sg+Z1qdM6w+oTwctk8NiGTDbzGaYWS5wKfBowDUNl/qUHjKtT5nWH1CfDl6i7nUe5AO4F9jOe0NEr4q+fg6R0QFvAf8cdJ3qk/qU6o9M64/6lLh9ZsTQWRERSa5MPg0lIiIJorAQEZGYFBYiIhKTwkJERGJSWIiISEwKCxERiUlhIRnBzNpHeH+3mtm8BG2r18xWmNkaM3vMzMbGaD/WzD6XiH2LxEvzLCQjmFm7uxclcHvZ7t6TqO3F2Ne+2s3sDmC9u397kPbTgd969NbUIiNBRxaSscyszMweNLNl0ccJ0dePNrOlZvaqmb1gZodGX7/SzB41sz8DT1lkVb6nLbLi2+tmdnf0VtVEX6+J/txukRUJV5rZi9G1NjCzQ6LPV5vZv8d59LOUyN1DMbMiM3vKzJZHt3F+tM2NwCHRo5HvRdteH+3jKjP7twT+bxQBFBaS2X4E/NDdjwKWALdGX38dOMndjwS+CfzHfp9ZBFzs7h+MPj8S+BKRtSZm0v/Kb4XAi+5+BJFbwX9mv/3/yN3nE8eqftHFa07nvfv5hIEL3X0RcCrw/WhY/RPwlrsvdPfrLbLM52wi6xksBBZHF8cRSRjdolwy2RnAvOjBAECJmRUBpcAdZjabyDKtOft95kl337Xf85fdvQ7AzFYA04HnDthPF5HleAFeIbJSGcBxwAXRn+8B/nOAOsdEtz0FWAc8GX3dgP+IfvH3Rd+v6OfzH44+Xo0+LyISHqm6homkIYWFZLIQcKy7h/d/0cxuBv7i7hdGz/8/vd/bew7YRud+P/fS/9+Zbn/v4t9AbQbT4e4LzawAeAK4lsjaCR8HyoDF7t5tZpuILL16IANucPefHeR+ReKm01CSyf5IZIUzAMxsYfTHUt67z/+VSdz/i0ROf0HkdtGD8shiVV8EvmJm2UTqbIwGxanAtGjTNqB4v48+AXwqetSEmU0xs/IE9UEEUFhI5igws7r9Hl8m8sVbE73ou5b3VgX7LnCDmb1Kco+uvwR82cxWAbOAllgfcPdXgVXAZcDdROpfDVxB5FoLHlnh7PnoUNvvufsfiZzmWhpt+wB/GyYiw6ahsyJJEj2t1OHubmaXApe5+/mxPieSinTNQiR5FgM3R0cwNQOfCrgekSHTkYWIiMSkaxYiIhKTwkJERGJSWIiISEwKCxERiUlhISIiMSksREQkpv8Pf5jO0ga7CEUAAAAASUVORK5CYII=%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Firstly we will train nn model for 10 epochs, at max learning rate of 2e-3.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">2e-3</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.343918</td>
+      <td>0.334851</td>
+      <td>0.903333</td>
+      <td>00:35</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.319538</td>
+      <td>0.352520</td>
+      <td>0.902667</td>
+      <td>00:37</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.339889</td>
+      <td>0.378988</td>
+      <td>0.897333</td>
+      <td>00:39</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.306681</td>
+      <td>0.351762</td>
+      <td>0.905000</td>
+      <td>00:39</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.284653</td>
+      <td>0.323651</td>
+      <td>0.910000</td>
+      <td>00:40</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.280786</td>
+      <td>0.322405</td>
+      <td>0.911750</td>
+      <td>00:41</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.254253</td>
+      <td>0.307338</td>
+      <td>0.919750</td>
+      <td>00:41</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.249282</td>
+      <td>0.295363</td>
+      <td>0.922333</td>
+      <td>00:39</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.246942</td>
+      <td>0.292607</td>
+      <td>0.924833</td>
+      <td>00:39</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.229630</td>
+      <td>0.292373</td>
+      <td>0.924583</td>
+      <td>00:40</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The accuracy achieved by it is 0.925. Now we have seen results from a plain NN, let's try training a CNN and see the results.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span> <span class="o">=</span> <span class="n">get_learner</span><span class="p">(</span><span class="n">get_model</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">2e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>epoch</th>
+      <th>train_loss</th>
+      <th>valid_loss</th>
+      <th>accuracy</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.127602</td>
+      <td>0.141943</td>
+      <td>0.955500</td>
+      <td>00:39</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.104358</td>
+      <td>0.106248</td>
+      <td>0.968167</td>
+      <td>00:46</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.072060</td>
+      <td>0.087537</td>
+      <td>0.973250</td>
+      <td>00:45</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0.063653</td>
+      <td>0.061928</td>
+      <td>0.983000</td>
+      <td>00:46</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>0.041726</td>
+      <td>0.052312</td>
+      <td>0.984083</td>
+      <td>00:44</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>0.037934</td>
+      <td>0.047995</td>
+      <td>0.986667</td>
+      <td>00:44</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>0.023682</td>
+      <td>0.039701</td>
+      <td>0.988583</td>
+      <td>00:49</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0.009950</td>
+      <td>0.037383</td>
+      <td>0.989667</td>
+      <td>00:48</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0.007573</td>
+      <td>0.035949</td>
+      <td>0.990667</td>
+      <td>00:47</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>0.003797</td>
+      <td>0.035787</td>
+      <td>0.990750</td>
+      <td>00:45</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Nice, we have able to get an accuracy of 0.99 with a CNN, which is far better than a simple NN</p>
+<p>Clearly, CNN is able to learn patterns of the images better than the plain NN. Also, the dataset is so simple that we are able to get more than 0.99 accuracy with a simple CNN. If the dataset is a complex one that this simple CNN will fail for sure. It will start overfitting, grads flow will be poor, and a lot of other issues. We will get to know more about this in the next and last part, and also we will see far more sophisticated architectures. Thanks.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="nitishsaDire/DLblog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/DLblog/2020/12/08/DLforCNN.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/DLblog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/DLblog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/DLblog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
