@@ -965,9 +965,9 @@ These plots meanings are defined below:</p>
 <a class="anchor" href="#Differences" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differences<a class="anchor-link" href="#Differences"> </a>
 </h2>
 <p>We compare below the three plots of both the CNNs:</p>
-<blockquote>
-<p><strong>plot-1:</strong> This plot tells that CNN with BN is clearly having faster convergence, better accuracies. The accuracy achieved is 0.99 in just 5 epochs, whereas on CNN without BN it's 0.48 in the same number of epochs. The CNN without BN might able to achieve comparable accuracies if we train it for more epochs but its convergence is definitely slower than CNN with BN.&gt; <strong>plot-2:</strong> The distribution of inputs to any sigmoid in CNN with BN remains stable throughout the training, which helps the network learn faster. In CNN without BN, the distributions keep on changing, because of which the network has to keep adapting to new input distributions, and hence slower convergence.&gt; <strong>plot-3:</strong> The main subplot of interest is %-near-zero which tells the percentage of activations that are near to zero. Clearly, CNN with BN has fewer such activations compared to CNN without BN.</p>
-</blockquote>
+<p><strong>plot-1:</strong> This plot tells that CNN with BN is clearly having faster convergence, better accuracies. The accuracy achieved is 0.99 in just 5 epochs, whereas on CNN without BN it's 0.48 in the same number of epochs. The CNN without BN might able to achieve comparable accuracies if we train it for more epochs but its convergence is definitely slower than CNN with BN.</p>
+<p><strong>plot-2:</strong> The distribution of inputs to any sigmoid in CNN with BN remains stable throughout the training, which helps the network learn faster. In CNN without BN, the distributions keep on changing, because of which the network has to keep adapting to new input distributions, and hence slower convergence.</p>
+<p><strong>plot-3:</strong> The main subplot of interest is %-near-zero which tells the percentage of activations that are near to zero. Clearly, CNN with BN has fewer such activations compared to CNN without BN.</p>
 
 </div>
 </div>
