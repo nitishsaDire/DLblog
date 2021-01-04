@@ -156,8 +156,8 @@ window.onload = wrap_img;
 <h2 id="Introduction">
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
-<p>When training a deep Neural Network (NN) then it's not that easy to just add more layers so as to improve the accuracy of the model. Deeper NN have their own challenges such as vanishing/exploding gradients, commonly said as poor grad flow.</p>
-<p>There is one more issue with deeper NN, known as Internal Covariate Shift, which could be defined as the change in the distribution of the input of some layer due to a change in network parameters. When a NN updates its parameters of say Layer 1, then the input received by later layers could easily change in distribution, and it becomes difficult for later layers parameters to keep adapting to new distributions. The paper of Batch Normalization resolves this challenge by fixing the distribution of all the inputs for all the layers. The motivation is from the fact that if the input to the first layer is whitened then a NN converges faster with better accuracies. If the input to the hidden layers is also whitened then the whole NN will have similar gains.</p>
+<p>When training a deep Neural Network (NN) then it's not that easy to just add more layers so as to improve the accuracy of the model. Deeper NN has its own challenges such as vanishing/exploding gradients, commonly said as poor grad flow.</p>
+<p>There is one more issue with deeper NN, known as Internal Covariate Shift, which could be defined as the change in the distribution of the input of some layer due to a change in network parameters. When a NN updates its parameters of say Layer 1, then the input received by later layers could easily change in distribution, and it becomes difficult for later layers parameters to keep adapting to new distributions. The paper on Batch Normalization resolves this challenge by fixing the distribution of all the inputs for all the layers. The motivation is from the fact that if the input to the first layer is whitened then a NN converges faster with better accuracies. If the input to the hidden layers is also whitened then the whole NN will have similar gains.</p>
 
 </div>
 </div>
@@ -168,7 +168,7 @@ window.onload = wrap_img;
 <h2 id="Batch-Normalization">
 <a class="anchor" href="#Batch-Normalization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Batch Normalization<a class="anchor-link" href="#Batch-Normalization"> </a>
 </h2>
-<p>With no whitening, problems of vanishing/exploding gradient generally occur for the deeper layers when the inputs to them have high or low magnitude. E.g. in sigmoid, the activations have zero grad when inputs are higher or lower, which is usually the case for deeper layers. One solution is to use RELU which do not have saturating outputs, but we want to develop a method instead which will put the inputs in a certain unsaturated range for all the activation functions.</p>
+<p>With no whitening, problems of vanishing/exploding gradient generally occur for the deeper layers when the inputs to them have high or low magnitude. E.g. in sigmoid, the activations have zero grad when inputs are higher or lower, which is usually the case for deeper layers. One solution is to use RELU which does not have saturating outputs, but we want to develop a method instead which will put the inputs in a certain unsaturated range for all the activation functions.</p>
 <p>Normalization could be done both before and after non-linearity, it's said to be beneficial to do before.</p>
 <p>Whitening is an expensive process because we need to rotate the input by the eigenvector matrix, which needs to be calculated for every layer, every epoch. So instead, we will be normalizing the inputs per dimension, and instead of using the whole training dataset for calculating mean and variance per dimension, we will be estimating it per minibatch.</p>
 <p>When we normalize the input of a layer we might end up decreasing the representation power of the layer because what if it wants the output to be in the saturated region in the case of sigmoid for example. So we scale and shift the normalized inputs. Algorithm-1 for BN is shown in the figure below, so any layer which was receiving input x will receive BN(x). Once the network is trained, we again input the whole training dataset to estimate the expected value of the mean and variance for all the layers, after which the network is ready for the inference.</p>
@@ -191,7 +191,7 @@ window.onload = wrap_img;
 <h3 id="CNN-with-BN-vs-without-BN">
 <a class="anchor" href="#CNN-with-BN-vs-without-BN" aria-hidden="true"><span class="octicon octicon-link"></span></a>CNN with BN vs without BN<a class="anchor-link" href="#CNN-with-BN-vs-without-BN"> </a>
 </h3>
-<p>Let's define two CNNs, one using Batch Normalization before Sigmoid layer, one without Batch Normalization. This will tell the impact of BN over the course of training. The dataset to use will be MNIST.</p>
+<p>Let's define two CNNs, one using Batch Normalization before the Sigmoid layer, one without Batch Normalization. This will tell the impact of BN over the course of training. The dataset to use will be MNIST.</p>
 
 </div>
 </div>
@@ -453,7 +453,7 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To get the idea what are the typical inputs, i.e what is input distribution to any of the sigmoid in the deeper layer, I have implemented a Hook callback. This hook will call <code>before_fit</code> at the start of fit initializing 3 lists for 15, 50, 85 percentile in the batch of inputs it has received. In <code>after_batch</code> it will append in the lists. <code>get_stats</code> is called in <code>after_fit</code> which will plot the stats with a running mean of 20.</p>
+<p>To get an idea what are the typical inputs, i.e what is input distribution to any of the sigmoid in the deeper layer, I have implemented a Hook callback. This hook will call <code>before_fit</code> at the start of fit initializing 3 lists for 15, 50, 85 percentile in the batch of inputs it has received. In <code>after_batch</code> it will append in the lists. <code>get_stats</code> is called in <code>after_fit</code> which will plot the stats with a running mean of 20.</p>
 
 </div>
 </div>
@@ -753,10 +753,10 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>There are three plots genereated, plot-1 plotting losses, whereas plot-2 has the various stats plot, plot-3 has activation stats for the last layer.
+<p>There are three plots generated, plot-1 plotting losses, whereas plot-2 has the various stats plot, plot-3 has activation stats for the last layer.
 These plots meanings are defined below:</p>
 <blockquote>
-<p><strong>plot-1:</strong> It the commonly used train/valid losses vs iterations plot.&gt; <strong>plot-2:</strong> It plots the different percentiles of the input for any sigmoid in the penultinate layer. &gt; <strong>plot-3:</strong> It plots the mean, standard-deviation, and percent-near-zeroof the activations output of the penultimate layer.</p>
+<p><strong>plot-1:</strong> It the commonly used train/valid losses vs iterations plot.&gt; <strong>plot-2:</strong> It plots the different percentiles of the input for any sigmoid in the penultimate layer. &gt; <strong>plot-3:</strong> It plots the mean, standard deviation, and percent-near-zeroof the activation output of the penultimate layer.</p>
 </blockquote>
 <p>We will discuss these plots once we also have got similar plots for CNN with Batch Normalization.</p>
 
@@ -966,7 +966,7 @@ These plots meanings are defined below:</p>
 </h2>
 <p>We compare below the three plots of both the CNNs:</p>
 <blockquote>
-<p><strong>plot-1:</strong> This plot tells that CNN with BN is clearly having faster convergence, better accuracies. The accuracy achieved is 0.99 in just 5 epochs, whereas in CNN without BN it's 0.48 in same number of epochs. The CNN without BN might able to achieve comparable accuracies if we train if for more epochs bu it's convergenc is definitely slower than CNN with BN.&gt; <strong>plot-2:</strong> The distribution of inputs to any sigmoid in CNN with BN remains stable throughout the training, which helps the network learn faster. In CNN without BN, the distrbutions keep on changing, because of which the network has to keep adapting to new input distributions, and hence slower convergence.&gt; <strong>plot-3:</strong> The main subplot of interest is %-near-zero which tells the percentage of activations which are near to zero. Clearly CNN with BN has less such activations compared to CNN without BN.</p>
+<p><strong>plot-1:</strong> This plot tells that CNN with BN is clearly having faster convergence, better accuracies. The accuracy achieved is 0.99 in just 5 epochs, whereas on CNN without BN it's 0.48 in the same number of epochs. The CNN without BN might able to achieve comparable accuracies if we train it for more epochs but its convergence is definitely slower than CNN with BN.&gt; <strong>plot-2:</strong> The distribution of inputs to any sigmoid in CNN with BN remains stable throughout the training, which helps the network learn faster. In CNN without BN, the distributions keep on changing, because of which the network has to keep adapting to new input distributions, and hence slower convergence.&gt; <strong>plot-3:</strong> The main subplot of interest is %-near-zero which tells the percentage of activations that are near to zero. Clearly, CNN with BN has fewer such activations compared to CNN without BN.</p>
 </blockquote>
 
 </div>
